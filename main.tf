@@ -1,5 +1,6 @@
 data "azurerm_subscription" "primary" {}
 data "azurerm_client_config" "aad" {}
+data "azuread_client_config "aadtenant {}
 
 resource "random_string" "random_str_val" {
   special = false
@@ -259,7 +260,7 @@ resource "azurerm_sql_active_directory_administrator" "sqlaadadmin" {
   resource_group_name = azurerm_resource_group.rg.name
   login               = "sqladmin"
   tenant_id           = data.azurerm_client_config.aad.tenant_id
-  object_id           = data.azurerm_client_config.aad.object_id
+  object_id           = data.azuread_client_config.aadtenant.object_id
 }
 
 
