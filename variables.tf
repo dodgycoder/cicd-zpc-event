@@ -15,7 +15,7 @@ variable "tags" {
 variable "storage" {
   type = map(string)
   default = {
-    "account" = "demodemostorageaccountzpc"
+    "account" = "demozszpcevent"
     "blobname" = "demozspdfblob"
   }
 }
