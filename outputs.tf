@@ -15,3 +15,7 @@ resource "local_file" "private_key" {
 output "role_id" {
   value = azurerm_linux_virtual_machine.my_terraform_vm.identity[0].principal_id
 }
+output "datbasepass" {
+  value = random_password.sql_admin_password.result
+}
+
