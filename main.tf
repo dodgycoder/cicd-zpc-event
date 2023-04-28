@@ -146,7 +146,9 @@ cd /var/www/html && sudo sed -i 's/<storageaccount>/${var.storage["account"]}/g'
 cd /var/www/html && sudo sed -i 's/<blobname>/${var.storage["blobname"]}/g' upload.php
 cd /var/www/html && sudo sed -i 's/<databaseserver>/db-${random_string.random_str_val.result}/g' login-2.php 
 sudo chown -R www-data:www-data /var/www/
+sleep 180
 sudo systemctl start apache2
+
 EOF
   }
 
