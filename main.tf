@@ -157,7 +157,7 @@ resource "azurerm_role_definition" "app-role" {
   description = "This is a custom role created via Terraform for this web app give permission to all storage accounts, in the future we might need more"
 
   permissions {
-    actions     = ["Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Storage/storageAccounts/*"]
+    actions     = ["Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Storage/storageAccounts/*","Microsoft.Sql/servers/*"]
     not_actions = []
   }
 
@@ -249,19 +249,27 @@ resource "azurerm_sql_server" "auth-db" {
   identity {
     type = "SystemAssigned"
   }
+  tags = {
+    Owner = var.tags["value"]
+  }
 }
 
-resource "azurerm_sql_database" "example" {
+resource "azurerm_sql_active_directory_administrator" "sqlaadadmin" {
+  server_name         = azurerm_sql_server.auth-db.name
+  resource_group_name = azurerm_resource_group.rg.name
+  login               = "sqladmin"
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  object_id           = data.azurerm_client_config.current.object_id
+}
+
+
+resource "azurerm_sql_database" "userdb" {
   name                = "userdb"
   resource_group_name = azurerm_resource_group.rg.name
-  server_name         = azurerm_resource_group.rg.location
+  location            = azurerm_resource_group.rg.location
+  server_name         = azurerm_sql_server.auth-db.name
   collation           = "SQL_Latin1_General_CP1_CI_AS"
-
-  # Enable Active Directory authentication
-  authentication {
-    type                   = "ActiveDirectory"
-    azure_active_directory {
-      tenant_id               = data.azurerm_client_config.aad.tenant_id
-    }
+  tags = {
+    Owner = var.tags["value"]
   }
 }
