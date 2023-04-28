@@ -4,7 +4,7 @@ data "azuread_client_config" "aadtenant" {}
 resource "random_string" "random_str_val" {
   special = false
   length =8
-  min_upper = 8
+  min_upper = 0
 }
 
 resource "random_string" "random_str_lower" {
