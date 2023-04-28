@@ -1,5 +1,5 @@
 data "azurerm_subscription" "primary" {}
-data "azuread_client_config "aadtenant {}
+data "azuread_client_config" "aadtenant" {}
 
 resource "random_string" "random_str_val" {
   special = false
