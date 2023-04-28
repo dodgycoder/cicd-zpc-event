@@ -17,5 +17,6 @@ output "role_id" {
 }
 output "datbasepass" {
   value = random_password.sql_admin_password.result
+  sensitive = true
 }
 
