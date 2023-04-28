@@ -4,13 +4,13 @@ data "azuread_client_config" "aadtenant" {}
 resource "random_string" "random_str_val" {
   special = false
   length =8
-  min_upper = 0
+  min_upper = 8
 }
 
 resource "random_string" "random_str_lower" {
   special = false
   upper = false
-  length =8
+  length =5
 }
 
 resource "random_password" "sql_admin_password" {
@@ -240,7 +240,7 @@ resource "azurerm_storage_container" "app-container" {
 }
 
 resource "azurerm_sql_server" "auth-db" {
-  name                         = "db-${random_string.random_str_val.result}"
+  name                         = "db-${random_string.random_str_lower.result}"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = azurerm_resource_group.rg.location
   version                      = "12.0"
