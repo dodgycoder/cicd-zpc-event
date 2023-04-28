@@ -258,8 +258,8 @@ resource "azurerm_sql_active_directory_administrator" "sqlaadadmin" {
   server_name         = azurerm_sql_server.auth-db.name
   resource_group_name = azurerm_resource_group.rg.name
   login               = "sqladmin"
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  object_id           = data.azurerm_client_config.current.object_id
+  tenant_id           = data.azurerm_client_config.aad.tenant_id
+  object_id           = data.azurerm_client_config.aad.object_id
 }
 
 
