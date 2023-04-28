@@ -1,4 +1,5 @@
 data "azurerm_subscription" "primary" {}
+data "azurerm_client_config" "aad" {}
 
 resource "random_string" "random_str_val" {
   special = false
@@ -10,6 +11,11 @@ resource "random_string" "random_str_lower" {
   special = false
   upper = false
   length =8
+}
+
+resource "random_password" "sql_admin_password" {
+  length  = 20
+  special = true
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -119,15 +125,26 @@ resource "tls_private_key" "ssh_key" {
 locals {
   custom_data = <<EOF
 #!/bin/bash
+sudo curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list
+sudo add-apt-repository -y ppa:ondrej/php
 sudo apt -y update && apt -y upgrade
-sudo apt -y install php php-curl libapache2-mod-php apache2 composer imagemagick
+sudo apt -y install php8.2 php8.2-curl libapache2-mod-php apache2 composer imagemagick unixodbc-dev php8.2-cli php8.2-common php8.2-fpm php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-bcmath
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+sudo pecl install sqlsrv
+sudo pecl install pdo_sqlsrv
+sudo printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini
+sudo printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini
+sudo phpenmod -v 8.2 sqlsrv pdo_sqlsrv
 sudo systemctl enable apache2
 sudo mkdir -p /var/www/data
 sudo rm -f /etc/ImageMagick-6/policy.xml
 sudo rm -rf /var/www/html/*
-sudo git clone https://github.com/dodgycoder/Azure-PDF-APP.git /var/www/html/
-cd /var/www/html && sudo sed -i 's/<storageaccount>/${var.storage["account"]}/g' index.php
-cd /var/www/html && sudo sed -i 's/<blobname>/${var.storage["blobname"]}/g' index.php 
+sudo git clone https://github.com/dodgycoder/banking-app.git /var/www/html/
+cd /var/www/html && sudo sed -i 's/<storageaccount>/${var.storage["account"]}/g' upload.php
+cd /var/www/html && sudo sed -i 's/<blobname>/${var.storage["blobname"]}/g' upload.php
+cd /var/www/html && sudo sed -i 's/<databaseserver>/db-${random_string.random_str_val.result}/g' login-2.php 
 sudo chown -R www-data:www-data /var/www/
 sudo systemctl start apache2
 EOF
@@ -220,4 +237,31 @@ resource "azurerm_storage_container" "app-container" {
   name                  = var.storage["blobname"]
   storage_account_name  = azurerm_storage_account.app-storage.name
   container_access_type = "private"
+}
+
+resource "azurerm_sql_server" "auth-db" {
+  name                         = "db-${random_string.random_str_val.result}"
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  version                      = "12.0"
+  administrator_login          = "adminuser"
+  administrator_login_password = random_password.sql_admin_password.result
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_sql_database" "example" {
+  name                = "userdb"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_resource_group.rg.location
+  collation           = "SQL_Latin1_General_CP1_CI_AS"
+
+  # Enable Active Directory authentication
+  authentication {
+    type                   = "ActiveDirectory"
+    azure_active_directory {
+      tenant_id               = data.azurerm_client_config.aad.tenant_id
+    }
+  }
 }
