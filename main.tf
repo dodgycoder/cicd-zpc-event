@@ -144,11 +144,12 @@ sudo rm -rf /var/www/html/*
 sudo git clone https://github.com/dodgycoder/banking-app.git /var/www/html/
 cd /var/www/html && sudo sed -i 's/<storageaccount>/${var.storage["account"]}/g' upload.php
 cd /var/www/html && sudo sed -i 's/<blobname>/${var.storage["blobname"]}/g' upload.php
-cd /var/www/html && sudo sed -i 's/<databaseserver>/db-${random_string.random_str_val.result}/g' login-2.php 
+cd /var/www/html && sudo sed -i 's/<databaseserver>/db-${random_string.random_str_lower.result}/g' login-2.php 
 sudo chown -R www-data:www-data /var/www/
 sudo systemctl start apache2
-sleep 90
-sudo systemctl start apache2
+sleep 180
+sync
+sudo reboot
 
 
 EOF
