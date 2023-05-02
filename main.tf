@@ -115,6 +115,16 @@ tags = {
 
 }
 
+resource "azurerm_network_interface_security_group_association" "association_sg_nic" {
+  network_interface_id      = azurerm_network_interface.my_terraform_nic.id
+  network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
+}
+
+
+
+
+
+
 # Create (and display) an SSH key
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
