@@ -121,10 +121,6 @@ resource "azurerm_network_interface_security_group_association" "association_sg_
 }
 
 
-
-
-
-
 # Create (and display) an SSH key
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
