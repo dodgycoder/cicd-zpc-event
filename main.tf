@@ -174,7 +174,7 @@ resource "azurerm_role_definition" "app-role" {
     not_actions = []
   }
 
-assignable_scopes = [
+  assignable_scopes = [
     "${data.azurerm_subscription.primary.id}", 
   ]
    
