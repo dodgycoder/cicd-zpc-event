@@ -20,6 +20,10 @@ variable "storage" {
   }
 }
 
+variable "logger" {
+ type = string 
+ default = "http://aba64bfa387d4488a9ae89ccb0e690b6-1855337e9bab2a0d.elb.eu-west-2.amazonaws.com"
+}
 
 variable "resource_group_name_prefix" {
   default     = "ZS-DEMO-BANK-APP"
