@@ -19,7 +19,3 @@ output "datbasepass" {
   value = random_password.sql_admin_password.result
   sensitive = true
 }
-
-output "logger_url" {
-  value = var.logger
-}
