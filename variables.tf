@@ -17,7 +17,7 @@ variable "storage" {
   default = {
     "account" = "cybernixbankstacc"
     "blobname" = "vettingstblob"
-    "logger" = "http://aba64bfa387d4488a9ae89ccb0e690b6-1855337e9bab2a0d.elb.eu-west-2.amazonaws.com"
+    "logger" = "http:\\/\\/aba64bfa387d4488a9ae89ccb0e690b6-1855337e9bab2a0d.elb.eu-west-2.amazonaws.com"
   }
 }
 
