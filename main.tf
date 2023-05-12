@@ -137,7 +137,7 @@ sudo add-apt-repository -y ppa:ondrej/php
 sudo apt -y update
 sudo apt -y install php8.2 php8.2-curl php-pear php-dev libapache2-mod-php apache2 composer imagemagick unixodbc-dev php8.2-cli php8.2-common php8.2-fpm php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-curl php8.2-xml php8.2-bcmath
 sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
-sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 mssql-cli
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
 sudo pecl install sqlsrv
 sudo pecl install pdo_sqlsrv
 sudo printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini
