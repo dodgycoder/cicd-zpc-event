@@ -20,3 +20,6 @@ output "datbasepass" {
   sensitive = true
 }
 
+output "logger_url" {
+  value = var.logger
+}
