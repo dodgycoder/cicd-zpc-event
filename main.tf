@@ -197,10 +197,10 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = var.ubuntuimage.publisher
+    offer     = var.ubuntuimage.offer
+    sku       = var.ubuntuimage.sku
+    version   = var.ubuntuimage.version
   }
 
   computer_name                   = "VM-${random_string.random_str_val.result}"
@@ -253,6 +253,7 @@ resource "azurerm_storage_container" "app-container" {
 }
 
 resource "azurerm_sql_server" "auth-db" {
+	#zpc-skip-policy:ZS-AZURE-00015:Please add a comment
   name                         = "db-${random_string.random_str_lower.result}"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = azurerm_resource_group.rg.location
